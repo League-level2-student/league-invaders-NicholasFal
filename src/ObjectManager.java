@@ -53,6 +53,19 @@ void addAlien() {
 				projectiles.remove(projectile);
 			}
 		}
+		
+	}
+	void checkCollision() {
+		for(Alien alien: aliens) {
+			if(rocket.collisionBox.intersects(alien.collisionBox)) {
+				alien.isActive = false;
+			}
+			for(Projectile projectile: projectiles) {
+				if(alien.collisionBox.intersects(projectile.collisionBox)) {
+					projectile.isActive = false;
+				}
+			}
+		}
 	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
