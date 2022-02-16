@@ -9,6 +9,7 @@ Rocketship rocket;
 ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 ArrayList<Alien> aliens = new ArrayList<Alien>();
 Random random = new Random();
+int score = 0;
 ObjectManager(Rocketship rocket) {
 	this.rocket = rocket;
 }
@@ -28,9 +29,14 @@ void addAlien() {
 	}
 	for(Projectile projectile : projectiles) {
 		projectile.update();
-		if(projectile.y <= LeagueInvaders.HEIGHT) {
+		if(projectile.y <= 0) {
 			projectile.isActive = false;
 		}
+	}
+	rocket.update();
+	if(rocket.isActive) {
+	checkCollision();
+	purgeObjects();
 	}
 }
 	void draw(Graphics g) {
@@ -43,14 +49,14 @@ void addAlien() {
 		}
 	}
 	void purgeObjects() {
-		for(Alien alien: aliens) {
-			if(alien.isActive = false) {
-				aliens.remove(alien);
+		for(int i = aliens.size() - 1; i >= 0; i--) {
+			if(!aliens.get(i).isActive) {
+				aliens.remove(i);
 			}
 		}
-		for(Projectile projectile : projectiles) {
-			if(projectile.isActive = false) {
-				projectiles.remove(projectile);
+		for(int i = projectiles.size() - 1; i >= 0; i--) {
+			if(!projectiles.get(i).isActive) {
+				projectiles.remove(i);
 			}
 		}
 		
@@ -59,14 +65,21 @@ void addAlien() {
 		for(Alien alien: aliens) {
 			if(rocket.collisionBox.intersects(alien.collisionBox)) {
 				alien.isActive = false;
+				rocket.isActive = false;
 			}
 			for(Projectile projectile: projectiles) {
 				if(alien.collisionBox.intersects(projectile.collisionBox)) {
 					projectile.isActive = false;
+					alien.isActive = false;
+					score++;
 				}
 			}
 		}
 	}
+	public int getScore() {
+		return score;
+		}
+	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub

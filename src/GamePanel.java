@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.Timer;
 import javax.imageio.ImageIO;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements ActionListener, KeyListener {
@@ -51,6 +52,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
 	void updateGameState() {
 		objectmanager.update();
+		if(!rocketship.isActive) {
+			currentState = END;
+		}
 	}
 
 	void updateEndState() {
@@ -82,7 +86,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 			g.fillRect(0, 0, LeagueInvaders.WIDTH, LeagueInvaders.HEIGHT);
 		}
 		objectmanager.draw(g);
-
+		g.setFont(miniText);
+		g.setColor(Color.WHITE);
+		g.drawString(String.valueOf(objectmanager.getScore()), 100, 100);
 	}
 
 	void drawEndState(Graphics g) {
@@ -93,7 +99,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		g.drawString("Game Over", 100, 100);
 		g.setFont(miniText);
 		g.setColor(Color.YELLOW);
-		g.drawString("You killed _ enemies", 200, 300);
+		g.drawString("You killed "  + objectmanager.getScore() + " enemies", 200, 300);
 		g.drawString("Press ENTER to restart", 180, 400);
 	}
 
@@ -115,7 +121,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 		if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
-			System.out.println("enter");
+			if(currentState == END) {
+				rocketship = new Rocketship(250, 700, 50, 50);
+				objectmanager = new ObjectManager(rocketship);
+			}
 			if (currentState == END) {
 				currentState = MENU;
 			} else {
@@ -129,6 +138,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 					currentState++;
 				}
 			}
+			
 		}
 			if (currentState == GAME) {
 				if (arg0.getKeyCode() == KeyEvent.VK_UP) {
